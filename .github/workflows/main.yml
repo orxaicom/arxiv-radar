@@ -1,0 +1,23 @@
+name: Run Bash Script
+
+on:
+  push:
+
+jobs:
+  run-bash-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Bash script
+        run: |
+          chmod +x run.sh
+          ./run.sh ${{ secrets.KAGGLE_U }} ${{ secrets.KAGGLE_K }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: output
+          path: ./output
