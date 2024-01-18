@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const info = chart.data.datasets[datasetIndex].data[dataIndex];
 
             if (info.link) {
-              window.location.href = info.link;
+              window.open(info.link, "_blank");
             }
           }
         });
