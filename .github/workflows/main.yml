@@ -16,8 +16,11 @@ jobs:
           chmod +x run.sh
           ./run.sh ${{ secrets.KAGGLE_U }} ${{ secrets.KAGGLE_K }}
 
+      - name: 'Tar files to maintain permissions'
+        run: tar -cvf output.tar ./output
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: output
-          path: ./output
+          path: ./output.tar
