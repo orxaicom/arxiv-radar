@@ -129,13 +129,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const info = chart.data.datasets[datasetIndex].data[dataIndex];
 
             if (info.link) {
-              window.open(info.link, "_blank");
+              window.location.href = info.link;
             }
           }
         });
 
         function showTooltip(x, y, title) {
-          tooltipContainer.innerHTML = `<strong>${title}</strong>`;
+          tooltipContainer.innerHTML = `<span>${title}</span>`;
           tooltipContainer.style.left = x + "px";
           tooltipContainer.style.top = y - tooltipContainer.clientHeight + "px";
           tooltipContainer.style.display = "block";
