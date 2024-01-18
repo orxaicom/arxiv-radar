@@ -38,7 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
           r: 10,
           title: additionalInfo[index].title,
           abstract: additionalInfo[index].abstract,
-          link: additionalInfo[index].link,
+          link: additionalInfo[index].arxiv_id
+            ? `https://arxiv.org/abs/${additionalInfo[index].arxiv_id}`
+            : null,
           cluster: clusters[index],
         }));
 
