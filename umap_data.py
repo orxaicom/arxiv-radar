@@ -92,7 +92,7 @@ def generate_umap_and_clusters(csv_file_path):
         json.dump(umap_data, json_file)
 
     # Perform K-Means clustering for the entire dataset
-    num_clusters_all = 5  # Adjust the number of clusters as needed
+    num_clusters_all = min(len(embeddings), 5)  # Adjust the number of clusters as needed
     kmeans_all = KMeans(n_clusters=num_clusters_all, random_state=42)
     clusters_all = kmeans_all.fit_predict(embeddings)
 
@@ -123,7 +123,7 @@ def generate_umap_and_clusters(csv_file_path):
             json.dump(umap_data_field, json_file)
 
         # Perform K-Means clustering for each field
-        num_clusters_field = 5  # Adjust the number of clusters as needed
+        num_clusters_field = min(len(field_embeddings), 5)  # Adjust the number of clusters as needed
         kmeans_field = KMeans(n_clusters=num_clusters_field, random_state=42)
         clusters_field = kmeans_field.fit_predict(field_embeddings)
 
@@ -137,5 +137,5 @@ def generate_umap_and_clusters(csv_file_path):
 
 
 if __name__ == "__main__":
-    csv_file_path = "daily-arxiv-embeddings.csv"  # Replace with the actual path to your CSV file
+    csv_file_path = "daily-arxiv-embeddings.csv"
     generate_umap_and_clusters(csv_file_path)
