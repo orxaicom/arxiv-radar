@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   dropdownItems.forEach((item) => {
     item.addEventListener("click", function () {
-      const category = this.textContent; // Get text content instead of dataset
+      const category = this.dataset.category;
       selectedCategory.textContent = category;
       loadUMAPData(category);
     });
