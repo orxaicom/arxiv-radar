@@ -5,18 +5,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const categoryBtn = document.getElementById("categoryBtn");
   const selectedCategory = document.getElementById("selectedCategory");
-  const dropdownItems = document.querySelectorAll(".dropdown-content a");
+  const dropdownContainer = document.querySelector(".dropdown-content");
 
-  dropdownItems.forEach((item) => {
-    item.addEventListener("click", function () {
-      const category = this.dataset.category;
-      selectedCategory.textContent = this.textContent;
+  dropdownContainer.addEventListener("click", handleDropdownClick);
+
+  function handleDropdownClick(event) {
+    if (event.target.tagName === "A") {
+      const category = event.target.dataset.category;
+      selectedCategory.textContent = event.target.textContent;
+      hideTooltip(); // Clear tooltip when changing category
       loadUMAPData(category);
-    });
-  });
+    }
+  }
 
   function loadUMAPData(category) {
     if (chart) {
+      console.log("Destroying existing chart");
       chart.destroy();
     }
 
@@ -43,6 +47,8 @@ document.addEventListener("DOMContentLoaded", function () {
             : null,
           cluster: clusters[index],
         }));
+
+        console.log("Loaded Bubble Data:", bubbleData);
 
         chart = new Chart(ctx, {
           type: "bubble",
@@ -92,64 +98,78 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         });
 
-        ctx.canvas.addEventListener("mousemove", (event) => {
-          const xOffset = 20;
-          const yOffset = 20;
+        console.log("New chart created");
 
-          const activePoint = chart.getElementsAtEventForMode(
-            event,
-            "nearest",
-            { intersect: true },
-            false,
-          )[0];
-
-          if (activePoint) {
-            const datasetIndex = activePoint.datasetIndex;
-            const dataIndex = activePoint.index;
-            const info = chart.data.datasets[datasetIndex].data[dataIndex];
-            showTooltip(
-              event.pageX + xOffset,
-              event.pageY - yOffset,
-              info.title,
-            );
-          } else {
-            hideTooltip();
-          }
-        });
-
-        ctx.canvas.addEventListener("click", (event) => {
-          const activePoint = chart.getElementsAtEventForMode(
-            event,
-            "nearest",
-            { intersect: true },
-            false,
-          )[0];
-
-          if (activePoint) {
-            const datasetIndex = activePoint.datasetIndex;
-            const dataIndex = activePoint.index;
-            const info = chart.data.datasets[datasetIndex].data[dataIndex];
-
-            if (info.link) {
-              window.open(info.link, "_blank");
-            }
-          }
-        });
-
-        function showTooltip(x, y, title) {
-          tooltipContainer.innerHTML = `<span>${title}</span>`;
-          tooltipContainer.style.left = x + "px";
-          tooltipContainer.style.top = y - tooltipContainer.clientHeight + "px";
-          tooltipContainer.style.display = "block";
-        }
-
-        function hideTooltip() {
-          tooltipContainer.style.display = "none";
-        }
+        attachChartListeners();
       })
       .catch((error) =>
         console.error("Error loading UMAP and cluster data:", error),
       );
+  }
+
+  function attachChartListeners() {
+    // Remove existing listeners
+    ctx.canvas.removeEventListener("mousemove", handleMouseMove);
+    ctx.canvas.removeEventListener("click", handleMouseClick);
+
+    // Attach new listeners
+    ctx.canvas.addEventListener("mousemove", handleMouseMove);
+    ctx.canvas.addEventListener("click", handleMouseClick);
+  }
+
+  function handleMouseMove(event) {
+    const xOffset = 20;
+    const yOffset = 20;
+
+    const activePoint = chart.getElementsAtEventForMode(
+      event,
+      "nearest",
+      { intersect: true },
+      false,
+    )[0];
+
+    if (activePoint) {
+      const datasetIndex = activePoint.datasetIndex;
+      const dataIndex = activePoint.index;
+      const info = chart.data.datasets[datasetIndex].data[dataIndex];
+      showTooltip(
+        event.pageX + xOffset,
+        event.pageY - yOffset,
+        info.title,
+      );
+    } else {
+      hideTooltip();
+    }
+  }
+
+  function handleMouseClick(event) {
+    const activePoint = chart.getElementsAtEventForMode(
+      event,
+      "nearest",
+      { intersect: true },
+      false,
+    )[0];
+
+    if (activePoint) {
+      const datasetIndex = activePoint.datasetIndex;
+      const dataIndex = activePoint.index;
+      const info = chart.data.datasets[datasetIndex].data[dataIndex];
+
+      if (info.link) {
+        window.open(info.link, "_blank");
+      }
+    }
+  }
+
+  function showTooltip(x, y, title) {
+    tooltipContainer.innerHTML = `<span>${title}</span>`;
+    tooltipContainer.style.left = x + "px";
+    tooltipContainer.style.top = y - tooltipContainer.clientHeight + "px";
+    tooltipContainer.style.display = "block";
+  }
+
+  function hideTooltip() {
+    tooltipContainer.style.display = "none";
   }
 
   // Initial load with default selection
