@@ -17,9 +17,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (event.target.tagName === "A") {
       const category = event.target.dataset.category;
       selectedCategory.textContent = event.target.textContent;
-      hideTooltip(); // Clear tooltip when changing category
+      hideTooltip();
       loadUMAPData(category);
-      dropdownContainer.classList.remove("show"); // Hide dropdown after selecting an option
+      dropdownContainer.classList.remove("show");
     }
   }
 
@@ -113,11 +113,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function attachChartListeners() {
-    // Remove existing listeners
     ctx.canvas.removeEventListener("mousemove", handleMouseMove);
     ctx.canvas.removeEventListener("click", handleMouseClick);
 
-    // Attach new listeners
     ctx.canvas.addEventListener("mousemove", handleMouseMove);
     ctx.canvas.addEventListener("click", handleMouseClick);
   }
@@ -177,6 +175,5 @@ document.addEventListener("DOMContentLoaded", function () {
     tooltipContainer.style.display = "none";
   }
 
-  // Initial load with default selection
   loadUMAPData("Computer_Science");
 });
