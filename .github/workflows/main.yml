@@ -34,5 +34,5 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             -H "Accept: application/vnd.github.everest-preview+json" \
             -H "Content-Type: application/json" \
-            https://api.github.com/repos/orxaicom/orx-builder/dispatches \
-            -d '{"event_type": "trigger-external-event"}'
+            https://api.github.com/repos/orxaicom/orx-builder/actions/workflows/Build_And_Publish/dispatches \
+            -d '{"ref": "main"}'
