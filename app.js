@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const ctx = document.getElementById("umap-plot").getContext("2d");
   const tooltipContainer = document.getElementById("tooltip-container");
   let chart;
-  let isLoading = false; // Track if data is currently being loaded
+  let isLoading = false;
 
   const categoryBtn = document.getElementById("categoryBtn");
   const selectedCategory = document.getElementById("selectedCategory");
@@ -22,24 +22,24 @@ document.addEventListener("DOMContentLoaded", function () {
       const category = event.target.dataset.category;
       selectedCategory.textContent = event.target.textContent;
       hideTooltip();
-      showLoading(); // Show loading animation
+      showLoading();
       loadUMAPData(category);
       dropdownContainer.classList.remove("show");
     }
   }
 
   function showLoading() {
-    // You can replace this with your own loading animation logic
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "20px Arial";
-    ctx.fillText("Loading...", ctx.canvas.width / 2, ctx.canvas.height / 2);
     isLoading = true;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center";
+    ctx.fillText("Loading...", ctx.canvas.width / 2, ctx.canvas.height / 2);
   }
 
   function hideLoading() {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     isLoading = false;
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
 
   function loadUMAPData(category) {
@@ -144,10 +144,10 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function handleMouseMove(event) {
+    if (isLoading) return;
+
     const xOffset = 20;
     const yOffset = 20;
-
-    if (isLoading) return; // Ignore mouse events during loading
 
     const activePoint = chart.getElementsAtEventForMode(
       event,
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function handleMouseClick(event) {
-    if (isLoading) return; // Ignore mouse events during loading
+    if (isLoading) return;
 
     const activePoint = chart.getElementsAtEventForMode(
       event,
