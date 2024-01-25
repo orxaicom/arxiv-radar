@@ -27,7 +27,7 @@ body {
 .dropbtn {
   background-color: #000000;
   color: #ffffff;
-  padding: 12px 30px 12px 16px; /* Adjust padding for extra space */
+  padding: 12px 30px 12px 16px;
   border-radius: 10px;
   border: none;
   cursor: pointer;
@@ -41,19 +41,20 @@ body {
   display: inline-block;
   padding: 3px;
   position: absolute;
-  right: 10px; /* Adjust the right offset */
+  right: 10px;
   top: 50%;
   transform: translateY(-50%) rotate(45deg);
 }
 
 .dropbtn:hover {
-  background-color: #111111; /* Make the hover almost black */
+  background-color: #111111;
 }
 
 .dropdown-content {
-  min-width: 200px; /* Adjust the width as needed */
+  min-width: 200px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1;
+  position: absolute; /* Ensure dropdown is always positioned absolutely */
 }
 
 .dropdown-content a {
@@ -61,17 +62,19 @@ body {
   padding: 12px 16px;
   display: block;
   text-decoration: none;
-  border-radius: 10px; /* Maintain the same roundness */
+  border-radius: 10px;
 }
 
 .dropdown-content a:hover {
-  background-color: #000000; /* Make the hover black */
+  background-color: #000000;
 }
 
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
+/* Remove the hover effect from .dropbtn since the dropdown appears on click */
 .dropdown:hover .dropbtn {
-  background-color: #111111; /* Make the hover almost black */
+  background-color: #000000;
+}
+
+/* Display the dropdown content when the dropdown is clicked */
+.dropdown.show .dropdown-content {
+  display: block;
 }
