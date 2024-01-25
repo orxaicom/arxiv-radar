@@ -2,30 +2,44 @@ document.addEventListener("DOMContentLoaded", function () {
   const ctx = document.getElementById("umap-plot").getContext("2d");
   const tooltipContainer = document.getElementById("tooltip-container");
   let chart;
+  let isLoading = false; // Track if data is currently being loaded
 
   const categoryBtn = document.getElementById("categoryBtn");
   const selectedCategory = document.getElementById("selectedCategory");
   const dropdownContainer = document.querySelector(".dropdown-content");
 
-  // Toggle the 'show' class when the category button is clicked
   categoryBtn.addEventListener("click", function (event) {
-    event.preventDefault(); // Prevent the default behavior (page jump)
+    event.preventDefault();
     dropdownContainer.classList.toggle("show");
   });
 
-  // Handle clicks on dropdown items
   dropdownContainer.addEventListener("click", handleDropdownClick);
 
   function handleDropdownClick(event) {
-    event.preventDefault(); // Prevent the default behavior (page jump)
+    event.preventDefault();
 
     if (event.target.tagName === "A") {
       const category = event.target.dataset.category;
       selectedCategory.textContent = event.target.textContent;
       hideTooltip();
+      showLoading(); // Show loading animation
       loadUMAPData(category);
-      dropdownContainer.classList.remove("show"); // Hide dropdown after selecting an option
+      dropdownContainer.classList.remove("show");
     }
+  }
+
+  function showLoading() {
+    // You can replace this with your own loading animation logic
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "20px Arial";
+    ctx.fillText("Loading...", ctx.canvas.width / 2, ctx.canvas.height / 2);
+    isLoading = true;
+  }
+
+  function hideLoading() {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    isLoading = false;
   }
 
   function loadUMAPData(category) {
@@ -33,6 +47,8 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("Destroying existing chart");
       chart.destroy();
     }
+
+    isLoading = true;
 
     fetch(`umap_data_${category}.json`)
       .then((response) => response.json())
@@ -110,11 +126,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         console.log("New chart created");
 
+        hideLoading();
         attachChartListeners();
       })
-      .catch((error) =>
-        console.error("Error loading UMAP and cluster data:", error),
-      );
+      .catch((error) => {
+        console.error("Error loading UMAP and cluster data:", error);
+        hideLoading();
+      });
   }
 
   function attachChartListeners() {
@@ -128,6 +146,8 @@ document.addEventListener("DOMContentLoaded", function () {
   function handleMouseMove(event) {
     const xOffset = 20;
     const yOffset = 20;
+
+    if (isLoading) return; // Ignore mouse events during loading
 
     const activePoint = chart.getElementsAtEventForMode(
       event,
@@ -151,6 +171,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function handleMouseClick(event) {
+    if (isLoading) return; // Ignore mouse events during loading
+
     const activePoint = chart.getElementsAtEventForMode(
       event,
       "nearest",
@@ -180,5 +202,6 @@ document.addEventListener("DOMContentLoaded", function () {
     tooltipContainer.style.display = "none";
   }
 
+  // Initial load with default selection
   loadUMAPData("Computer_Science");
 });
