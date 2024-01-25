@@ -16,6 +16,15 @@ document.addEventListener("DOMContentLoaded", function () {
   // Handle clicks on dropdown items
   dropdownContainer.addEventListener("click", handleDropdownClick);
 
+  // Handle clicks outside the dropdown to close it
+  document.addEventListener("click", function (event) {
+    const isClickInsideDropdown = dropdownContainer.contains(event.target);
+    const isClickInsideCategoryBtn = categoryBtn.contains(event.target);
+    if (!isClickInsideDropdown && !isClickInsideCategoryBtn) {
+      dropdownContainer.classList.remove("show");
+    }
+  });
+
   function handleDropdownClick(event) {
     event.preventDefault(); // Prevent the default behavior (page jump)
 
