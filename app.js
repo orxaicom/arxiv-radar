@@ -8,7 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const dropdownContainer = document.querySelector(".dropdown-content");
 
   // Toggle the 'show' class when the category button is clicked
-  categoryBtn.addEventListener("click", function () {
+  categoryBtn.addEventListener("click", function (event) {
+    event.preventDefault(); // Prevent the default behavior (page jump)
     dropdownContainer.classList.toggle("show");
   });
 
@@ -16,6 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
   dropdownContainer.addEventListener("click", handleDropdownClick);
 
   function handleDropdownClick(event) {
+    event.preventDefault(); // Prevent the default behavior (page jump)
+
     if (event.target.tagName === "A") {
       const category = event.target.dataset.category;
       selectedCategory.textContent = event.target.textContent;
