@@ -33,9 +33,16 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const response = await github.repos.createDispatchEvent({
+            const { data } = await github.repos.createDispatchEvent({
               owner: 'orxaicom',
               repo: 'orx-builder',
               event_type: 'trigger-external-event',
+              client_payload: {
+                unit: false,
+                integration: true,
+              },
+              headers: {
+                'X-GitHub-Api-Version': '2022-11-28',
+              },
             });
-            console.log(response.data);
+            console.log(data);
