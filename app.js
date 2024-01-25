@@ -7,10 +7,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const selectedCategory = document.getElementById("selectedCategory");
   const dropdownContainer = document.querySelector(".dropdown-content");
 
+  // Toggle the 'show' class when the category button is clicked
   categoryBtn.addEventListener("click", function () {
     dropdownContainer.classList.toggle("show");
   });
 
+  // Handle clicks on dropdown items
   dropdownContainer.addEventListener("click", handleDropdownClick);
 
   function handleDropdownClick(event) {
@@ -19,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
       selectedCategory.textContent = event.target.textContent;
       hideTooltip();
       loadUMAPData(category);
-      dropdownContainer.classList.remove("show");
+      dropdownContainer.classList.remove("show"); // Hide dropdown after selecting an option
     }
   }
 
