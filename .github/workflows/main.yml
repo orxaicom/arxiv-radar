@@ -5,8 +5,6 @@ on:
   repository_dispatch:
     types: [trigger-external-event]
   push:
-    branches:
-      - main
 
 jobs:
   run-bash-script:
