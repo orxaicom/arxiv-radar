@@ -31,12 +31,11 @@ jobs:
       - name: Trigger orx-builder
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { data } = await github.repos.createDispatchEvent({
+            const response = await octokit.request('POST /repos/:owner/:repo/dispatches', {
               owner: 'orxaicom',
               repo: 'orx-builder',
               event_type: 'trigger-external-event',
             });
-            console.log(data);
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            console.log(response.data);
