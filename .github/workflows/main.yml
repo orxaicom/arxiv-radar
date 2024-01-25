@@ -27,3 +27,16 @@ jobs:
         with:
           name: output
           path: ./output.tar
+
+      - name: Trigger orx-builder
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data } = await github.repos.createDispatchEvent({
+              owner: 'orxaicom',
+              repo: 'orx-builder',
+              event_type: 'trigger-external-event',
+            });
+            console.log(data);
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
