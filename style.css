@@ -54,7 +54,13 @@ body {
   min-width: 200px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  position: absolute; /* Ensure dropdown is always positioned absolutely */
+  position: absolute;
+  /* Ensure dropdown is always positioned absolutely */
+}
+
+/* Styles for the .show class */
+.dropdown-content.show {
+  display: block;
 }
 
 .dropdown-content a {
@@ -71,10 +77,5 @@ body {
 
 /* Remove the hover effect from .dropbtn since the dropdown appears on click */
 .dropdown:hover .dropbtn {
-  background-color: #000000;
-}
-
-/* Display the dropdown content when the dropdown is clicked */
-.dropdown.show .dropdown-content {
-  display: block;
+  background-color: #111111;
 }
