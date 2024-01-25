@@ -4,7 +4,6 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types: [trigger-external-event]
-  push:
 
 jobs:
   run-bash-script:
