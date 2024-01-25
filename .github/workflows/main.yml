@@ -1,7 +1,12 @@
 name: Run_Bash_Script
 
 on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [trigger-external-event]
   push:
+    branches:
+      - main
 
 jobs:
   run-bash-script:
