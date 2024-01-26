@@ -60,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
           y: point[1],
           r: 10,
           title: additionalInfo[index].title,
-          abstract: additionalInfo[index].abstract,
           link: additionalInfo[index].arxiv_id
             ? `https://arxiv.org/abs/${additionalInfo[index].arxiv_id}`
             : null,
