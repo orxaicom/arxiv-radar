@@ -31,12 +31,11 @@ def generate_umap_and_clusters(csv_file_path):
         arxiv_id = row["arxiv"]
         embedding_bytes = ast.literal_eval(row["embedding"])
         title = row["title"]
-        abstract = row["abstract"]
         field = row["field"]
         categories = row["categories"]
 
         # Check if all fields exist
-        if embedding_bytes and title and abstract and field:
+        if embedding_bytes and title and field:
             embedding = np.frombuffer(embedding_bytes, dtype=np.float32)
             embeddings.append(embedding.tolist())  # Convert to Python list
             keys.append(arxiv_id)
@@ -44,7 +43,6 @@ def generate_umap_and_clusters(csv_file_path):
                 {
                     "arxiv_id": arxiv_id,
                     "title": title,
-                    "abstract": abstract,
                     "field": field,
                     "categories": categories,
                 }
@@ -63,7 +61,6 @@ def generate_umap_and_clusters(csv_file_path):
                 {
                     "arxiv_id": arxiv_id,
                     "title": title,
-                    "abstract": abstract,
                     "field": field,
                     "categories": categories,
                 }
