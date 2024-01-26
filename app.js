@@ -137,42 +137,46 @@ document.addEventListener("DOMContentLoaded", function () {
     const xOffset = 20;
     const yOffset = 20;
 
-    const activePoint = chart.getElementsAtEventForMode(
-      event,
-      "nearest",
-      { intersect: true },
-      false,
-    )[0];
+    if (chart) {
+      const activePoint = chart.getElementsAtEventForMode(
+        event,
+        "nearest",
+        { intersect: true },
+        false,
+      )[0];
 
-    if (activePoint) {
-      const datasetIndex = activePoint.datasetIndex;
-      const dataIndex = activePoint.index;
-      const info = chart.data.datasets[datasetIndex].data[dataIndex];
-      showTooltip(
-        event.pageX + xOffset,
-        event.pageY - yOffset,
-        info.title,
-      );
-    } else {
-      hideTooltip();
+      if (activePoint) {
+        const datasetIndex = activePoint.datasetIndex;
+        const dataIndex = activePoint.index;
+        const info = chart.data.datasets[datasetIndex].data[dataIndex];
+        showTooltip(
+          event.pageX + xOffset,
+          event.pageY - yOffset,
+          info.title,
+        );
+      } else {
+        hideTooltip();
+      }
     }
   }
 
   function handleMouseClick(event) {
-    const activePoint = chart.getElementsAtEventForMode(
-      event,
-      "nearest",
-      { intersect: true },
-      false,
-    )[0];
+    if (chart) {
+      const activePoint = chart.getElementsAtEventForMode(
+        event,
+        "nearest",
+        { intersect: true },
+        false,
+      )[0];
 
-    if (activePoint) {
-      const datasetIndex = activePoint.datasetIndex;
-      const dataIndex = activePoint.index;
-      const info = chart.data.datasets[datasetIndex].data[dataIndex];
+      if (activePoint) {
+        const datasetIndex = activePoint.datasetIndex;
+        const dataIndex = activePoint.index;
+        const info = chart.data.datasets[datasetIndex].data[dataIndex];
 
-      if (info.link) {
-        window.open(info.link, "_blank");
+        if (info.link) {
+          window.open(info.link, "_blank");
+        }
       }
     }
   }
