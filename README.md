@@ -16,6 +16,9 @@ repo.
 This is hosted on front page of our website
 [orxai.com](https://www.orxai.com).
 
+Note: There are no new paper on arXiv on Saturdays and Sundays and
+[Holidays](https://info.arxiv.org/help/availability.html).
+
 TODO:
 * Category Filters
 * Search
