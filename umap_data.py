@@ -6,13 +6,11 @@ from sklearn.cluster import KMeans
 import json
 import ast
 
-
 def read_csv(file_path):
     with open(file_path, "r", newline="", encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         data = [row for row in reader]
     return data
-
 
 def generate_umap_and_clusters(csv_file_path):
     # Read data from CSV
@@ -103,17 +101,15 @@ def generate_umap_and_clusters(csv_file_path):
     for field, field_info in field_data.items():
         field_embeddings = np.array(field_info["embeddings"])
 
-
+        # Adjust n_neighbors based on the number of embeddings, but not less than 2
+        n_neighbors = max(2, min(len(field_embeddings), 30))
         
         # Perform UMAP dimensionality reduction for each field
-        umap_field = UMAP(n_components=2, n_neighbors=30, min_dist=0.1, random_state=42)
+        umap_field = UMAP(n_components=2, n_neighbors=n_neighbors, min_dist=0.1, random_state=42)
 
         # Debug
         if len(field_embeddings) == 0:
             print(f"Field '{field}' has no embeddings. Skipping UMAP transformation.")
-            continue
-        elif len(field_embeddings) < umap_field.n_neighbors:
-            print(f"Field '{field}' has too few embeddings for UMAP. Skipping UMAP transformation.")
             continue
         elif np.isnan(field_embeddings).any() or np.isinf(field_embeddings).any():
             print(f"Field '{field}' embeddings contain NaN or Inf values. Skipping UMAP transformation.")
