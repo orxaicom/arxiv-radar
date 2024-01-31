@@ -103,6 +103,11 @@ def generate_umap_and_clusters(csv_file_path):
     for field, field_info in field_data.items():
         field_embeddings = np.array(field_info["embeddings"])
 
+        # Skip fields with too few samples for UMAP or KMeans
+        if len(field_embeddings) < 2:
+            print(f"Skipping field {field} due to insufficient samples.")
+            continue
+
         # Perform UMAP dimensionality reduction for each field
         n_neighbors_field = min(30, len(field_embeddings) - 1)  # Adjust n_neighbors according to the number of samples
         umap_field = UMAP(n_components=2, n_neighbors=n_neighbors_field, min_dist=0.1, random_state=42)
