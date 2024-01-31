@@ -73,9 +73,12 @@ def generate_umap_and_clusters(csv_file_path):
 
     # Convert lists to numpy arrays
     embeddings = np.array(embeddings)
+    
+    # Adjust n_neighbors based on the number of field_embeddings
+    n_neighbors = min(max(len(field_embeddings)+1, 2), 30)
 
     # Perform UMAP dimensionality reduction in 2D with adjusted parameters for the entire dataset
-    umap = UMAP(n_components=2, n_neighbors=30, min_dist=0.1, random_state=42)
+    umap = UMAP(n_components=2, n_neighbors=n_neighbors, min_dist=0.1, random_state=42)
     embedded_embeddings = umap.fit_transform(embeddings)
 
     # Save the UMAP embeddings for the entire dataset to a JSON file
