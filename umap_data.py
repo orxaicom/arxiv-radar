@@ -102,21 +102,12 @@ def generate_umap_and_clusters(csv_file_path):
     # Generate UMAP and cluster data for each field
     for field, field_info in field_data.items():
         field_embeddings = np.array(field_info["embeddings"])
-
+        
         # Adjust n_neighbors based on the number of field_embeddings
         n_neighbors = min(max(len(field_embeddings), 1), 30)
-
+        
         # Perform UMAP dimensionality reduction for each field
         umap_field = UMAP(n_components=2, n_neighbors=n_neighbors, min_dist=0.1, random_state=42)
-
-        # Debug
-        if len(field_embeddings) == 0:
-            print(f"Field '{field}' has no embeddings. Skipping UMAP transformation.")
-            continue
-        elif np.isnan(field_embeddings).any() or np.isinf(field_embeddings).any():
-            print(f"Field '{field}' embeddings contain NaN or Inf values. Skipping UMAP transformation.")
-            continue
-            
         embedded_embeddings_field = umap_field.fit_transform(field_embeddings)
 
         # Save the UMAP embeddings for each field to a JSON file
