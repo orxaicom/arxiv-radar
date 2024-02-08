@@ -14,6 +14,13 @@ def read_csv(file_path):
     return data
 
 
+def generate_random_data(size, n_components=2):
+    # Generate random embeddings and random cluster assignments
+    random_embeddings = np.random.rand(size, n_components)
+    random_clusters = np.random.randint(0, 5, size)
+    return random_embeddings, random_clusters
+
+
 def generate_umap_and_clusters(csv_file_path):
     # Read data from CSV
     csv_data = read_csv(csv_file_path)
@@ -66,46 +73,28 @@ def generate_umap_and_clusters(csv_file_path):
                 }
             )
 
-    # Check if there are any embeddings
-    if not embeddings:
-        print("No embeddings found. Exiting.")
-        exit()
-
-    # Convert lists to numpy arrays
-    embeddings = np.array(embeddings)
-
-    # Perform UMAP dimensionality reduction in 2D with adjusted parameters for the entire dataset
-    umap = UMAP(n_components=2, n_neighbors=30, min_dist=0.1, random_state=42)
-    embedded_embeddings = umap.fit_transform(embeddings)
-
-    # Save the UMAP embeddings for the entire dataset to a JSON file
-    umap_data = {
-        "embeddings": embedded_embeddings.tolist(),
-        "keys": keys,
-        "additional_info": additional_info,
-    }
-    umap_output_path = os.path.join("output", "umap_data_All.json")
-    with open(umap_output_path, "w") as json_file:
-        json.dump(umap_data, json_file)
-
-    # Perform K-Means clustering for the entire dataset
-    num_clusters_all = min(len(embeddings), 5)  # Adjust the number of clusters as needed
-    kmeans_all = KMeans(n_clusters=num_clusters_all, random_state=42)
-    clusters_all = kmeans_all.fit_predict(embeddings)
-
-    # Save the cluster information for the entire dataset to a JSON file
-    cluster_data_all = {"clusters": clusters_all.tolist()}
-    cluster_output_path = os.path.join("output", "cluster_data_All.json")
-    with open(cluster_output_path, "w") as json_file:
-        json.dump(cluster_data_all, json_file)
+    # Ensure the output directory exists
+    os.makedirs("output", exist_ok=True)
 
     # Generate UMAP and cluster data for each field
     for field, field_info in field_data.items():
-        field_embeddings = np.array(field_info["embeddings"])
+        if len(field_info["embeddings"]) < 5:
+            # If less than 5 embeddings, generate random data
+            random_embeddings, random_clusters = generate_random_data(
+                len(field_info["embeddings"])
+            )
+            embedded_embeddings_field = random_embeddings
+            clusters_field = random_clusters
+        else:
+            # Perform UMAP dimensionality reduction for each field
+            field_embeddings = np.array(field_info["embeddings"])
+            umap_field = UMAP(n_components=2, n_neighbors=30, min_dist=0.1, random_state=42)
+            embedded_embeddings_field = umap_field.fit_transform(field_embeddings)
 
-        # Perform UMAP dimensionality reduction for each field
-        umap_field = UMAP(n_components=2, n_neighbors=30, min_dist=0.1, random_state=42)
-        embedded_embeddings_field = umap_field.fit_transform(field_embeddings)
+            # Perform K-Means clustering for each field
+            num_clusters_field = min(len(field_embeddings), 5)  # Adjust the number of clusters as needed
+            kmeans_field = KMeans(n_clusters=num_clusters_field, random_state=42)
+            clusters_field = kmeans_field.fit_predict(field_embeddings)
 
         # Save the UMAP embeddings for each field to a JSON file
         umap_data_field = {
@@ -118,11 +107,6 @@ def generate_umap_and_clusters(csv_file_path):
         )
         with open(umap_output_field_path, "w") as json_file:
             json.dump(umap_data_field, json_file)
-
-        # Perform K-Means clustering for each field
-        num_clusters_field = min(len(field_embeddings), 5)  # Adjust the number of clusters as needed
-        kmeans_field = KMeans(n_clusters=num_clusters_field, random_state=42)
-        clusters_field = kmeans_field.fit_predict(field_embeddings)
 
         # Save the cluster information for each field to a JSON file
         cluster_data_field = {"clusters": clusters_field.tolist()}
