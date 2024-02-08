@@ -76,6 +76,39 @@ def generate_umap_and_clusters(csv_file_path):
     # Ensure the output directory exists
     os.makedirs("output", exist_ok=True)
 
+    # Check if there are any embeddings for the entire dataset
+    if embeddings:
+        # Convert lists to numpy arrays
+        embeddings = np.array(embeddings)
+
+        # Perform UMAP dimensionality reduction in 2D with adjusted parameters for the entire dataset
+        umap_all = UMAP(n_components=2, n_neighbors=30, min_dist=0.1, random_state=42)
+        embedded_embeddings = umap_all.fit_transform(embeddings)
+
+        # Perform K-Means clustering for the entire dataset
+        num_clusters_all = min(len(embeddings), 5)  # Adjust the number of clusters as needed
+        kmeans_all = KMeans(n_clusters=num_clusters_all, random_state=42)
+        clusters_all = kmeans_all.fit_predict(embeddings)
+
+        # Save the UMAP embeddings for the entire dataset to a JSON file
+        umap_data = {
+            "embeddings": embedded_embeddings.tolist(),
+            "keys": keys,
+            "additional_info": additional_info,
+        }
+        umap_output_path = os.path.join("output", "umap_data_All.json")
+        with open(umap_output_path, "w") as json_file:
+            json.dump(umap_data, json_file)
+
+        # Save the cluster information for the entire dataset to a JSON file
+        cluster_data_all = {"clusters": clusters_all.tolist()}
+        cluster_output_path = os.path.join("output", "cluster_data_All.json")
+        with open(cluster_output_path, "w") as json_file:
+            json.dump(cluster_data_all, json_file)
+    else:
+        print("No embeddings found for the entire dataset. Exiting.")
+        return
+
     # Generate UMAP and cluster data for each field
     for field, field_info in field_data.items():
         if len(field_info["embeddings"]) < 5:
