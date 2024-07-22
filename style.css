@@ -22,10 +22,15 @@ body {
 }
 
 .controls {
+    font-size: initial;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.controls a {
+    all: revert;
 }
 
 .chart-container {
