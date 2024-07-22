@@ -1,40 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>arXiv radar</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
-    <div class="text-center">
-      <h1>arXiv radar</h1>
-      <div class="dropdown">
-        <button class="dropbtn" id="categoryBtn">
-          <span id="selectedCategory">Computer Science</span>
-        </button>
-        <div class="dropdown-content">
-          <a href="#" data-category="Computer_Science">Computer Science</a>
-          <a href="#" data-category="Economics">Economics</a>
-          <a href="#" data-category="Electrical_Engineering_and_Systems_Science"
-            >Electrical Engineering</a
-          >
-          <a href="#" data-category="Mathematics">Mathematics</a>
-          <a href="#" data-category="Physics">Physics</a>
-          <a href="#" data-category="Quantitative_Biology"
-            >Quantitative Biology</a
-          >
-          <a href="#" data-category="Quantitative_Finance"
-            >Quantitative Finance</a
-          >
-          <a href="#" data-category="Statistics">Statistics</a>
-          <a href="#" data-category="All">All</a>
+</head>
+<body>
+    <div class="container">
+        <h1>arXiv radar</h1>
+        <div class="controls">
+            <div class="dropdown">
+                <button class="dropbtn" id="categoryBtn">
+                    <span id="selectedCategory">Computer Science</span>
+                </button>
+                <div class="dropdown-content">
+                    <a href="#" data-category="Computer_Science">Computer Science</a>
+                    <a href="#" data-category="Economics">Economics</a>
+                    <a href="#" data-category="Electrical_Engineering">Electrical Engineering</a>
+                    <a href="#" data-category="Mathematics">Mathematics</a>
+                    <a href="#" data-category="Physics">Physics</a>
+                    <a href="#" data-category="Quantitative_Biology">Quantitative Biology</a>
+                    <a href="#" data-category="Quantitative_Finance">Quantitative Finance</a>
+                    <a href="#" data-category="Statistics">Statistics</a>
+                    <a href="#" data-category="All">All</a>
+                </div>
+            </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search titles...">
+            </div>
         </div>
-      </div>
-      <canvas id="umap-plot" width="800" height="600"></canvas>
-      <div id="tooltip-container"></div>
+        <canvas id="umap-plot"></canvas>
+        <div id="tooltip-container"></div>
     </div>
     <script src="app.js"></script>
-  </body>
+</body>
 </html>
