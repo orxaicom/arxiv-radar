@@ -175,7 +175,8 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         },
         animation: {
-          duration: 0
+          duration: 1000,
+          easing: 'easeInOutQuad'
         }
       },
     });
