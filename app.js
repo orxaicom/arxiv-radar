@@ -1,22 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
   const ctx = document.getElementById("umap-plot").getContext("2d");
   const tooltipContainer = document.getElementById("tooltip-container");
+  const searchInput = document.getElementById("searchInput");
   let chart;
+  let bubbleData;
 
   const categoryBtn = document.getElementById("categoryBtn");
   const selectedCategory = document.getElementById("selectedCategory");
   const dropdownContainer = document.querySelector(".dropdown-content");
 
-  // Toggle the 'show' class when the category button is clicked
   categoryBtn.addEventListener("click", function (event) {
-    event.preventDefault(); // Prevent the default behavior (page jump)
+    event.preventDefault();
     dropdownContainer.classList.toggle("show");
   });
 
-  // Handle clicks on dropdown items
   dropdownContainer.addEventListener("click", handleDropdownClick);
 
-  // Handle clicks outside the dropdown to close it
   document.addEventListener("click", function (event) {
     const isClickInsideDropdown = dropdownContainer.contains(event.target);
     const isClickInsideCategoryBtn = categoryBtn.contains(event.target);
@@ -25,104 +24,102 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+  searchInput.addEventListener("input", handleSearch);
+
   function handleDropdownClick(event) {
-    event.preventDefault(); // Prevent the default behavior (page jump)
+    event.preventDefault();
 
     if (event.target.tagName === "A") {
       const category = event.target.dataset.category;
       selectedCategory.textContent = event.target.textContent;
       hideTooltip();
       loadUMAPData(category);
-      dropdownContainer.classList.remove("show"); // Hide dropdown after selecting an option
+      dropdownContainer.classList.remove("show");
     }
   }
 
   function loadUMAPData(category) {
     if (chart) {
-      console.log("Destroying existing chart");
       chart.destroy();
     }
 
-    fetch(`umap_data_${category}.json`)
-      .then((response) => response.json())
-      .then((umapData) => {
-        return fetch(`cluster_data_${category}.json`)
-          .then((response) => response.json())
-          .then((clusterData) => ({ umapData, clusterData }));
-      })
-      .then((data) => {
-        const embeddings = data.umapData.embeddings;
-        const additionalInfo = data.umapData.additional_info;
-        const clusters = data.clusterData.clusters;
+    Promise.all([
+      fetch(`umap_data_${category}.json`).then(response => response.json()),
+      fetch(`cluster_data_${category}.json`).then(response => response.json())
+    ])
+    .then(([umapData, clusterData]) => {
+      const embeddings = umapData.embeddings;
+      const additionalInfo = umapData.additional_info;
+      const clusters = clusterData.clusters;
 
-        const bubbleData = embeddings.map((point, index) => ({
-          x: point[0],
-          y: point[1],
-          r: 10,
-          title: additionalInfo[index].title,
-          link: additionalInfo[index].arxiv_id
-            ? `https://arxiv.org/abs/${additionalInfo[index].arxiv_id}`
-            : null,
-          cluster: clusters[index],
-        }));
+      bubbleData = embeddings.map((point, index) => ({
+        x: point[0],
+        y: point[1],
+        r: 10,
+        title: additionalInfo[index].title,
+        link: additionalInfo[index].arxiv_id
+          ? `https://arxiv.org/abs/${additionalInfo[index].arxiv_id}`
+          : null,
+        cluster: clusters[index],
+        opacity: 1,
+        relevant: true,
+      }));
 
-        console.log("Loaded Bubble Data:", bubbleData);
+      createChart();
+      attachChartListeners();
+    })
+    .catch((error) => console.error("Error loading UMAP and cluster data:", error));
+  }
 
-        chart = new Chart(ctx, {
-          type: "bubble",
-          data: {
-            datasets: [
-              {
-                label: "UMAP Plot",
-                data: bubbleData,
-              },
-            ],
+  function createChart() {
+    chart = new Chart(ctx, {
+      type: "bubble",
+      data: {
+        datasets: [
+          {
+            label: "UMAP Plot",
+            data: bubbleData,
           },
-          options: {
-            scales: {
-              x: {
-                title: { display: true, text: "UMAP Component 1" },
-                grid: { color: "rgba(255,255,255,0.2)" },
-              },
-              y: {
-                title: { display: true, text: "UMAP Component 2" },
-                grid: { color: "rgba(255,255,255,0.2)" },
-              },
-            },
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                enabled: false,
-              },
-            },
-            elements: {
-              point: {
-                backgroundColor: (context) => {
-                  const clusterColorMap = {
-                    0: "#1f77b4",
-                    1: "#ff7f0e",
-                    2: "#2ca02c",
-                    3: "#d62728",
-                    4: "#9467bd",
-                  };
-                  const cluster =
-                    context.dataset.data[context.dataIndex].cluster;
-                  return clusterColorMap[cluster] || "#000000";
-                },
-                borderColor: "#FFFFFF",
-                borderWidth: 1,
-              },
-            },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            title: { display: true, text: "UMAP Component 1" },
+            grid: { color: "rgba(255,255,255,0.2)" },
           },
-        });
-
-        console.log("New chart created");
-
-        attachChartListeners();
-      })
-      .catch((error) =>
-        console.error("Error loading UMAP and cluster data:", error),
-      );
+          y: {
+            title: { display: true, text: "UMAP Component 2" },
+            grid: { color: "rgba(255,255,255,0.2)" },
+          },
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: false,
+          },
+        },
+        elements: {
+          point: {
+            backgroundColor: (context) => {
+              const dataPoint = context.dataset.data[context.dataIndex];
+              const color = dataPoint.relevant ? getColorForCluster(dataPoint.cluster) : "#808080";
+              return `rgba(${getRGBFromHex(color)}, ${dataPoint.opacity})`;
+            },
+            borderColor: (context) => {
+              const dataPoint = context.dataset.data[context.dataIndex];
+              return `rgba(255, 255, 255, ${dataPoint.opacity})`;
+            },
+            borderWidth: 1,
+          },
+        },
+        animation: {
+          duration: 0
+        }
+      },
+    });
   }
 
   function attachChartListeners() {
@@ -190,6 +187,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function hideTooltip() {
     tooltipContainer.style.display = "none";
+  }
+
+  function handleSearch() {
+    const searchTerm = searchInput.value.toLowerCase();
+    
+    if (chart) {
+      bubbleData.forEach((dataPoint) => {
+        const title = dataPoint.title.toLowerCase();
+        dataPoint.relevant = title.includes(searchTerm) || searchTerm === "";
+        dataPoint.opacity = dataPoint.relevant ? 1 : 0.2;
+      });
+      
+      chart.update();
+    }
+  }
+
+  function getColorForCluster(cluster) {
+    const clusterColorMap = {
+      0: "#1f77b4",
+      1: "#ff7f0e",
+      2: "#2ca02c",
+      3: "#d62728",
+      4: "#9467bd",
+    };
+    return clusterColorMap[cluster] || "#000000";
+  }
+
+  function getRGBFromHex(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `${r}, ${g}, ${b}`;
   }
 
   loadUMAPData("Computer_Science");
