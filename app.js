@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let chart;
   let bubbleData;
   let categories = new Set();
+  let isFirstLoad = true;
 
   const categoryBtn = document.getElementById("categoryBtn");
   const selectedCategory = document.getElementById("selectedCategory");
@@ -104,6 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
       createCategoryCheckboxes();
       createChart();
       attachChartListeners();
+      isFirstLoad = false;
     })
     .catch((error) => console.error("Error loading UMAP and cluster data:", error));
   }
@@ -175,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
           },
         },
         animation: {
-          duration: 1000,
+          duration: 800,
           easing: 'easeInOutQuad'
         }
       },
@@ -271,6 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
         dataPoint.opacity = dataPoint.relevant ? 1 : 0.2;
       });
       
+      chart.options.animation.duration = 0;
       chart.update();
     }
   }
