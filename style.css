@@ -32,6 +32,7 @@ body {
 .chart-container {
     flex-grow: 1;
     position: relative;
+    min-height: 500px;
 }
 
 #umap-plot {
