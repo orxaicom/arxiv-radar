@@ -20,6 +20,7 @@ Note: There are no new papers on arXiv on Saturdays and Sundays and
 [Holidays](https://info.arxiv.org/help/availability.html).
 
 TODO:
-* Category Filters
-* Search
-* Predicted Impact As Bubble Size
+* [x] Category Filters
+* [x] Search
+* [ ] Affiliation Filter
+* [ ] Predicted Impact As Bubble Size
