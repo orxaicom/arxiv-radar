@@ -54,6 +54,10 @@ body {
     display: none;
 }
 
+#tooltip-container {
+    margin: 10px;
+}
+
 .dropdown {
     position: relative;
     display: inline-block;
