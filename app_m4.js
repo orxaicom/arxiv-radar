@@ -1,5 +1,5 @@
 changequote(`{{', `}}')
-define({{CURRENT_DATE}}, {{esyscmd(date)}})
+define({{CURRENT_DATE}}, {{esyscmd(date | tr -d '\n')}})
 document.addEventListener("DOMContentLoaded", function () {
   const ctx = document.getElementById("umap-plot").getContext("2d");
   const tooltipContainer = document.getElementById("tooltip-container");
