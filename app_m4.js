@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           title: {
             display: true,
-            text: "Updated at CURRENT_DATE. No new papers on arXiv on Sat & Sun",
+            text: "Updated CURRENT_DATE. No new papers on arXiv on Sat & Sun",
           },
         },
         elements: {
