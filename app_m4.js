@@ -1,4 +1,4 @@
-changequote(`{{', `}}')
+changequote(`{{|', `|}}')
 document.addEventListener("DOMContentLoaded", function () {
   const ctx = document.getElementById("umap-plot").getContext("2d");
   const tooltipContainer = document.getElementById("tooltip-container");
@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           title: {
             display: true,
-            text: "Updated at {{esyscmd(date -u +'%b %d %R %Z')}}",
+            text: "Updated at {{|esyscmd(date -u +'%b %d %R %Z')|}}",
           },
         },
         elements: {
