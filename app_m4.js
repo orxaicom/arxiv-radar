@@ -134,6 +134,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function createChart() {
+    if (ctx.canvas) {
+      ctx.canvas.removeEventListener("mousemove", handleMouseMove);
+      ctx.canvas.removeEventListener("click", handleMouseClick);
+    }
+
     chart = new Chart(ctx, {
       type: "bubble",
       data: {
@@ -185,7 +190,9 @@ document.addEventListener("DOMContentLoaded", function () {
           duration: 800,
           easing: 'easeInOutQuad',
           onComplete: function() {
-            attachChartListeners();
+            setTimeout(() => {
+              attachChartListeners();
+            }, 100);
           }
         }
       },
@@ -193,6 +200,8 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function attachChartListeners() {
+    if (!chart || !ctx.canvas) return;
+    
     ctx.canvas.removeEventListener("mousemove", handleMouseMove);
     ctx.canvas.removeEventListener("click", handleMouseClick);
 
@@ -201,7 +210,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function handleMouseMove(event) {
-    if (!chart) return;
+    if (!chart || !chart.canvas) return;
     
     const elements = chart.getElementsAtEventForMode(
       event,
@@ -219,8 +228,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  function handleMouseClick(event) {
-    if (!chart) return;
+function handleMouseClick(event) {
+    if (!chart || !chart.canvas) return;
 
     const elements = chart.getElementsAtEventForMode(
       event,
@@ -229,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
       false
     );
 
-if (elements?.length) {
+    if (elements?.length) {
       const activePoint = elements[0];
       const info = chart.data.datasets[activePoint.datasetIndex].data[activePoint.index];
       if (info.link) {
